@@ -1,29 +1,16 @@
 CERTIFICATE_PATH = ''
 USE_TLS          = False
 PORT             = 80
+WEB_DIST         = "../web/dist"
 
 DATABASE_CONF    = {
     "host": "wsl.local",
+    "port": 5432,
     "user": "postgres",
-    "password": "a"
+    "password": "a",
+    "database": "pttk",
 }
 
-DATABASE_NAME    = "db_flower"
-DATABASE_SCHEMA  = "flower_f1"
-
-USE_V2 = False
-
-WEB_DIST         = "../web/dist"
-DATASET_PATH     = "../dataset"
-NEW_DATASET_PATH = "../dataset/new" # For new image only
-
-THRESHOLD        = 0.2
-
 from utils.utils import logger
-from utils.utils import make_dir_if_not_exists
-
 LOG_LEVEL       = logger.INFO
 LOG_FILE        = None
-
-import os
-make_dir_if_not_exists(os.path.join(os.getcwd(), NEW_DATASET_PATH))

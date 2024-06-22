@@ -33,7 +33,6 @@ class Router:
 
 class RequestRouter(BaseHTTPRequestHandler):
     __web_dir    = os.path.join(os.getcwd(), config.WEB_DIST)
-    __data_dir   = os.path.join(os.getcwd(), config.DATASET_PATH)
     __req_router = Router()
 
     @classmethod
@@ -51,10 +50,7 @@ class RequestRouter(BaseHTTPRequestHandler):
 
     def log_request(self, code='-', size='-'):
         if isinstance(code, HTTPStatus): code = code.value
-        if "dataset" in self.requestline and code == 200:
-            logger.debug(self.__class_name, self.address_string(), self.requestline, str(code), size)
-        else:
-            logger.info(self.__class_name, self.address_string(), self.requestline, str(code), size)
+        logger.info(self.__class_name, self.address_string(), self.requestline, str(code), size)
 
     def do_METHOD(self, method):
         if method not in ('GET', 'POST', 'PUT', 'DELETE'):
@@ -67,8 +63,6 @@ class RequestRouter(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/api/'):
             self.route_request('GET')
-        elif self.path.startswith("/dataset/"):
-            self.handle_data_request()
         else:
             self.handle_ui_request()
 
@@ -81,16 +75,6 @@ class RequestRouter(BaseHTTPRequestHandler):
             self.handle_ui_request(403)
         else:
             self.handle_ui_request()
-
-    def handle_data_request(self):
-        # Serve UI files
-        req_file  = urlparse(self.path).path.replace("/dataset/", "")
-        filename  = os.path.join(self.__data_dir, req_file)
-        if os.path.isfile(filename) == False:
-            self.send_response(404)
-            self.end_headers()
-            return
-        self.send_file(filename, 200)
 
     def handle_ui_request(self, resp_code = 200):
         # Serve UI files

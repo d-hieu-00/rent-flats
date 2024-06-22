@@ -2,7 +2,10 @@ import sys, pathlib
 
 # Internal
 sys.path.append(str(pathlib.Path(__file__).parent.parent))
-from database.db_main_v1 import DBMainV1
+import config
+from database.db_main import DBMain
+from database.db_setup import DBSetup
 
 class DBHanlder:
-    dbMain = DBMainV1()
+    dbMain = DBMain(config.DATABASE_CONF)
+    dbSetup = DBSetup(config.DATABASE_CONF)

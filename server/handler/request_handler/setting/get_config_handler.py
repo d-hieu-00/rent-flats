@@ -11,7 +11,7 @@ class GetConfigHandler(BaseRequestHandler):
     def path():     return "/api/config"
 
     def _handle(self, _: RequestRouter):
-        response = DBHanlder.dbMain.query_conf()
+        response = DBHanlder.dbSetup.query_conf()
         if response is None:
             self._set_resp(500, "Failed to query config")
         else:

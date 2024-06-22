@@ -9,11 +9,13 @@ from utils.utils import logger
 from utils.utils import is_json
 
 class BaseRequestHandler(ABC):
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def method():
         pass
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def path():
         pass
 
@@ -21,7 +23,7 @@ class BaseRequestHandler(ABC):
         super().__init__()
         self._resp_code = 400
         self._resp_msg  = "Unhandle"
-    
+
     @abstractmethod
     def _handle(self, req: RequestRouter):
         pass
@@ -62,13 +64,12 @@ class BaseRequestHandler(ABC):
 
     def handle(self, req: RequestRouter):
         self.__req_line = req.requestline
-        self._handle(req)
-        # try:
-        #     self._handle(req)
-        # except Exception as e:
-        #     logger.error(f"{self.__req_line} -- Handle failed: {str(e)}")
-        #     self._set_resp(500, str(e))
-        # except:
-        #     logger.error(f"{self.__req_line} -- Handle failed: Unknow Error")
-        #     self._set_resp(500, "Unknow Error")
+        try:
+            self._handle(req)
+        except Exception as e:
+            logger.error(f"{self.__req_line} -- Handle failed: {str(e)}")
+            self._set_resp(500, str(e))
+        except:
+            logger.error(f"{self.__req_line} -- Handle failed: Unknow Error")
+            self._set_resp(500, "Unknow Error")
         self._send_resp(req)

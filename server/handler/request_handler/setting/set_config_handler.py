@@ -19,7 +19,7 @@ class SetConfigHandler(BaseRequestHandler):
             self._set_resp(400, "Invalid body")
             return
         # Save to DB
-        db_resp = DBHanlder.dbMain.save_conf(body)
+        db_resp = DBHanlder.dbSetup.save_conf(body)
         if db_resp is None:
             self._set_resp(500, f"Failed to update config '{body}'")
             return
