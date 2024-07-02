@@ -22,6 +22,7 @@ class DBPgSql:
         self.__rconn = self.__connector.new_connection()
         self.__wconn = self.__connector.new_connection()
         self.__wlock = threading.Lock()
+        self.__rconn.autocommit = True
         self.__init_schema()
 
         logger.debug(f"[{self.class_name}] Inited {self.database_schema} database")

@@ -1,12 +1,15 @@
 import sys, pathlib
 import json
-from abc import ABC, abstractmethod, abstractclassmethod
+import http.cookies
+
+from abc import ABC, abstractmethod
 from handler.request_router import RequestRouter
 
 # Internal
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
 from utils.utils import logger
 from utils.utils import is_json
+from utils.utils import is_uuid
 
 class BaseRequestHandler(ABC):
     @classmethod
@@ -31,10 +34,11 @@ class BaseRequestHandler(ABC):
     def _read_body(self, req: RequestRouter, max_len: int = 10 * 1024 * 1024):
         # Expect request body has less than 10MB data
         # If it is larger. Define your own function to read and parse from stream
-        if "content-length" not in req.headers:
+        length = self._read_header(req, "content-length")
+        if length is None:
             logger.warn("Request have no body to read")
             return None
-        body_len = int(req.headers['content-length'])
+        body_len = int(length)
         if body_len > max_len:
             logger.warn(f"Request body is to larger -- max_len: {max_len}, req_size: {body_len}")
             return None
@@ -62,10 +66,30 @@ class BaseRequestHandler(ABC):
         else:
             req.end_headers()
 
+    def _read_header(self, req, name):
+        name = name.lower(); lst = []
+        for _name in req.headers.keys():
+            if _name.lower() == name:
+                lst.append(req.headers[_name])
+        return None if len(lst) == 0 else lst[-1]
+
+    def _read_session_id(self, req):
+        cookie_str = self._read_header(req, 'cookie')
+        if cookie_str is None:
+            return None
+        cookie_jar = http.cookies.SimpleCookie(cookie_str)
+        if "session_id" in cookie_jar:
+            session_id = cookie_jar["session_id"].value
+            return session_id if is_uuid(session_id) else None
+        else:
+            return None
+
     def handle(self, req: RequestRouter):
         self.__req_line = req.requestline
+        self._handle(req)
         try:
-            self._handle(req)
+            # self._handle(req)
+            1
         except Exception as e:
             logger.error(f"{self.__req_line} -- Handle failed: {str(e)}")
             self._set_resp(500, str(e))

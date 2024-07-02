@@ -4,6 +4,8 @@ import string
 import os
 import re
 import json
+import uuid
+import bcrypt
 
 """ Logger Functions """
 if os.name == 'nt': os.system('color')
@@ -80,6 +82,13 @@ def is_json(in_text: str):
     except:
         return False
 
+def is_uuid(uuid_string):
+    try:
+        uuid.UUID(uuid_string)
+        return True
+    except ValueError:
+        return False
+
 def save_to_file(in_data, filename):
     with open(filename, 'wb') as f:
         f.write(in_data)
@@ -87,3 +96,13 @@ def save_to_file(in_data, filename):
 def make_dir_if_not_exists(dir):
     if not os.path.exists(dir):
         os.mkdir(dir)
+
+def hash_password(password):
+  # Generate a random salt
+  salt = bcrypt.gensalt()
+  # Hash the password with the salt
+  hashed_password = bcrypt.hashpw(password.encode(), salt)
+  return salt, hashed_password
+
+def verify_password(hashed_password, plain_text_password):
+  return bcrypt.checkpw(plain_text_password.encode(), hashed_password.encode())
