@@ -1,7 +1,10 @@
 import { toast } from 'vue3-toastify';
 import { userApis } from '../../apis/user';
-import { getCookie, isRespError, fetchRespError, isUndefined } from '@/utils';
+import { getCookie, delCookie, isRespError, fetchRespError, isUndefined } from '@/utils';
 import { SEESION_ID } from '../../config';
+import { emitEvent } from '@/utils';
+
+// const emit = defineEmits(['user-info-change']);
 
 // initial state
 const state = {
@@ -31,7 +34,8 @@ const getters = {
     },
 
     isLoggedIn: (state: any) => {
-        return state.userInfo.loggedIn;
+        console.log("form getters.isLoggedIn", state)
+        return state.loggedIn;
     },
 
     otherInfo: (state: any) => {
@@ -41,20 +45,20 @@ const getters = {
 
 // actions
 const actions = {
-    fetchUser({ commit, state }: any) {
+    fetchUser({ dispatch, state }: any) {
         if (isUndefined(getCookie(SEESION_ID))) {
-            state.logoutCallback();
-            commit("delUserInfo");
+            if (!isUndefined(state.logoutCallback))
+                state.logoutCallback();
+            dispatch("delUserInfo");
             return;
         }
         userApis.fetchUser()
             .then(async (resp: Response) => {
                 const data = await resp.json();
                 if (isRespError(data)) {
-                    const err = fetchRespError(data);
-                    throw new Error(err);
+                    throw fetchRespError(data);
                 }
-                commit("setUserInfo",
+                dispatch("setUserInfo",
                     {
                         username: data["username"],
                         displayName: data["username"],
@@ -62,47 +66,58 @@ const actions = {
                         others: data
                     }
                 );
+            }, async (respErr: Response) => {
+                throw fetchRespError(await respErr.json());
             }).catch(err => {
                 toast.error(err);
-                state.logoutCallback();
-                commit("delUserInfo");
+                if (!isUndefined(state.logoutCallback))
+                    state.logoutCallback();
+                dispatch("delUserInfo");
             });
     },
-} 
 
-// mutations
-const mutations = {
     startInterval({ state, dispatch }: any) {
-        if (!isUndefined(state.intervalId)) {
-            clearInterval(state.intervalId);
+        if (isUndefined(state.intervalId)) {
+            state.intervalId = setInterval(() => dispatch("fetchUser"), 3000);
         }
-        state.intervalId = setInterval(() => dispatch("fetchUser"), 60000);
     },
 
-    stopInterval(state: any) {
+    setUserInfo({ state, dispatch }: any, { username, displayName, isAdmin, others }: any) {
+        state.userInfo.name = username;
+        state.userInfo.displayName = displayName;
+        state.userInfo.isAdmin = isAdmin;
+        state.userInfo.others = others;
+        state.loggedIn = true;
+        console.log("setUserInfo", state.loggedIn)
+        emitEvent('user-info-change');
+        dispatch("startInterval");
+    },
+
+    delUserInfo({ state, dispatch }: any) {
+        state.userInfo.name = "";
+        state.userInfo.displayName = "";
+        state.userInfo.isAdmin = false;
+        state.userInfo.others = {};
+        state.loggedIn = false;
+
+        console.log("delUserInfo", state.loggedIn)
+        emitEvent('user-info-change');
+        defineEmits(['user-info-change'])('user-info-change', 1)
+        delCookie(SEESION_ID);
+        dispatch("stopInterval");
+    },
+
+    stopInterval({ state }: any) {
+        const id = state.intervalId;
         if (!isUndefined(state.intervalId)) {
             clearInterval(state.intervalId);
             state.intervalId = undefined;
         }
     },
+} 
 
-    setUserInfo({ state, commit }: any, { username, displayName, isAdmin, others }: any) {
-        state.userInfo.name = username;
-        state.userInfo.displayName = displayName;
-        state.userInfo.isAdmin = isAdmin;
-        state.userInfo.others = others;
-        state.userInfo.isLoggedIn = true;
-        commit("startInterval");
-    },
-
-    delUserInfo({ state, commit }: any) {
-        state.userInfo.name = "";
-        state.userInfo.displayName = "";
-        state.userInfo.isAdmin = false;
-        state.userInfo.others = {};
-        state.userInfo.isLoggedIn = false;
-        commit("stopInterval");
-    },
+// mutations
+const mutations = {
 }
 
 export default {

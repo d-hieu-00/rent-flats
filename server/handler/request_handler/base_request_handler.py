@@ -62,8 +62,8 @@ class BaseRequestHandler(ABC):
     def _send_resp(self, req: RequestRouter):
         if self._resp_code == 403 or self._resp_code == 405 and self._read_session_id(req) is not None:
             self._set_header("Set-Cookie", "session_id=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT")
-        self._send_header(req)
         req.send_response(self._resp_code)
+        self._send_header(req)
         if self._resp_code == 200 and self._resp_msg is not None:
             req.send_header('Content-type', 'application/json' if is_json(self._resp_msg) else 'text/plain')
             req.end_headers()
@@ -97,10 +97,10 @@ class BaseRequestHandler(ABC):
 
     def handle(self, req: RequestRouter):
         self.__req_line = req.requestline
-        self._handle(req)
+        # self._handle(req)
         try:
-            # self._handle(req)
-            1
+            self._handle(req)
+            # 1
         except Exception as e:
             logger.error(f"{self.__req_line} -- Handle failed: {str(e)}")
             self._set_resp(500, str(e))

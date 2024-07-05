@@ -1,3 +1,5 @@
+import { ref } from 'vue';
+
 export function isNull(inVar: any) {
     return inVar === null;
 };
@@ -27,7 +29,7 @@ export function getCookie(name: string) : string | undefined {
 
 export function delCookie(name: string) {
     const cval = getCookie(name);
-    if (isNull(cval) && isUndefined(cval) ) {
+    if (!isNull(cval) && !isUndefined(cval) ) {
         let exp = new Date();
         exp.setTime(exp.getTime() - 1);
         document.cookie = name + "=" + cval + ";expires=" + exp.toUTCString();
@@ -53,3 +55,30 @@ export function fetchRespError(data: object | any) : string {
     }
     return "";
 }
+
+const eventBus = ref(new Map());
+
+const emitEvent = (eventName: string, payload?: any) => {
+    if (eventBus.value.has(eventName)) {
+        eventBus.value.get(eventName).forEach((callback: (_: any) => any) => callback(payload));
+    }
+};
+
+const onEvent = (eventName: string, callback: any) => {
+    if (!eventBus.value.has(eventName)) {
+        eventBus.value.set(eventName, []);
+    }
+    eventBus.value.get(eventName).push(callback);
+};
+
+const offEvent = (eventName: string, callback: any) => {
+    if (eventBus.value.has(eventName)) {
+        const callbacks = eventBus.value.get(eventName);
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    }
+};
+
+export { emitEvent, onEvent, offEvent };

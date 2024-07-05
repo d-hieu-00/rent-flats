@@ -15,7 +15,7 @@ import { RouterLink, RouterView } from 'vue-router'
       <label for="password">Password</label>
       <input type="password" id="password" v-model="password" required>
     </div>
-    <button type="submit">Login</button>
+    <button type="submit">Log In</button>
     <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
