@@ -106,3 +106,10 @@ def hash_password(password):
 
 def verify_password(hashed_password, plain_text_password):
   return bcrypt.checkpw(plain_text_password.encode(), hashed_password.encode())
+
+def is_not_file_name(path):
+    # Check if the path has an extension
+    _, ext = os.path.splitext(path)
+    if ext:
+        return False
+    return True

@@ -67,6 +67,14 @@ class DBMain(DBPgSql):
         else:
             return json.dumps(res[0][0])
 
+    def end_session(self, session_id):
+        cur = self.__call_db_fn(f'{self.database_schema}.end_session', session_id)
+        res = cur.fetchall()
+        if len(res) != 1:
+            return json.dumps({"error": "Unknow Error"})
+        else:
+            return json.dumps(res[0][0])
+
     def new_user(self, new_user):
         cur = self.__call_db_fn(f'{self.database_schema}.new_user', new_user)
         res = cur.fetchall()

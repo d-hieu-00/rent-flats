@@ -74,5 +74,5 @@ class LoginHandler(BaseRequestHandler):
         else:
             self._set_resp(400, "Invalid user or password")
             return
-        # Set header. TODO: set cookie
+        self._set_header("Set-Cookie", f"session_id={session_id}; path=/")
         self._set_resp(200, json.dumps({ "session_id": session_id }))

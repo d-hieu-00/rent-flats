@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 # Internal
 sys.path.append(str(pathlib.Path(__file__).parent.parent))
 from utils.utils import logger
+from utils.utils import is_not_file_name
 import config
 
 class Router:
@@ -81,7 +82,7 @@ class RequestRouter(BaseHTTPRequestHandler):
         req_file  = urlparse(self.path).path.lstrip('/')
         filename  = os.path.join(self.__web_dir, req_file)
         if os.path.isfile(filename) == False:
-            resp_code = 404
+            resp_code = 200 if is_not_file_name(req_file) else 404
             filename = os.path.join(self.__web_dir, 'index.html')
         self.send_file(filename, resp_code)
 

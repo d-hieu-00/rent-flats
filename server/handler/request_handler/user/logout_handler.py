@@ -9,9 +9,9 @@ from handler.db_handler import DBHanlder
 from handler.request_router import RequestRouter
 from handler.request_handler.base_request_handler import BaseRequestHandler
 
-class GetUserHandler(BaseRequestHandler):
-    def method():   return "GET"
-    def path():     return "/api/user"
+class LoginHandler(BaseRequestHandler):
+    def method():   return "POST"
+    def path():     return "/api/logout"
 
     def _handle(self, req: RequestRouter):
         # Check session_id
@@ -19,8 +19,10 @@ class GetUserHandler(BaseRequestHandler):
         if session_id is None or is_uuid(session_id) == False:
             self._set_resp(403, "Access denied")
             return
-        # Get user
-        db_ret = DBHanlder.dbMain.get_user_by_session_id(session_id)
+        # Find user
+        db_ret = DBHanlder.dbMain.end_session(session_id)
+        if db_ret is None:
+            self._set_resp(500, "Failed to logout")
         if is_json(db_ret):
             resp = json.loads(db_ret)
             if resp.keys().__contains__("error"):
@@ -28,5 +30,4 @@ class GetUserHandler(BaseRequestHandler):
             else:
                 self._set_resp(200, db_ret)
         else:
-            self._set_resp(500, "Failed to query user")
-
+            self._set_resp(500, "Failed to login")

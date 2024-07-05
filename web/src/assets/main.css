@@ -30,8 +30,6 @@ a,
 
   #app {
     height: inherit;
-    display: grid;
-    grid-template-columns: 1fr 5fr;
     padding: 0 2rem;
   }
 }

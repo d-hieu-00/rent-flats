@@ -73,6 +73,27 @@ def queries(schema_name):
             END;
             $$;
         """,
+        f"""CREATE OR REPLACE FUNCTION {schema_name}.end_session(IN in_session_id text)
+                RETURNS jsonb
+                LANGUAGE plpgsql
+            AS $$
+            DECLARE
+                out_data        jsonb;
+                out_session_id  uuid;
+            BEGIN
+                SELECT  row_to_json(users)::jsonb || jsonb_build_object('session', row_to_json(sessions)) INTO out_data
+                FROM    {schema_name}.users users JOIN {schema_name}.sessions sessions ON users.user_id = sessions.user_id
+                WHERE   sessions.session_id = in_session_id::uuid AND users.state != 0;
+
+                IF out_data IS NULL THEN
+                    RETURN jsonb_build_object('error', 'Not found session');
+                END IF;
+
+                DELETE FROM {schema_name}.sessions WHERE sessions.session_id = in_session_id::uuid;
+                RETURN jsonb_build_object('result', 'Success');
+            END;
+            $$;
+        """,
         f"""CREATE OR REPLACE FUNCTION {schema_name}.new_user(IN in_data jsonb)
                 RETURNS jsonb
                 LANGUAGE plpgsql

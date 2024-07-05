@@ -1,19 +1,12 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-</script>
-
 <template>
-    <RouterView/>
+    <p>Welcome</p>
 </template>
 
 <style scoped>
 </style>
 
 <script lang="ts">
-import { ref } from 'vue'
 import { toast } from 'vue3-toastify';
-
 export default {
     components: {},
     data() {
@@ -22,5 +15,7 @@ export default {
     },
     methods: {
     },
+    created() {
+    }
 }
 </script>

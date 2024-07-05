@@ -24,6 +24,7 @@ class BaseRequestHandler(ABC):
 
     def __init__(self) -> None:
         super().__init__()
+        self._resp_headers = {}
         self._resp_code = 400
         self._resp_msg  = "Unhandle"
 
@@ -44,6 +45,13 @@ class BaseRequestHandler(ABC):
             return None
         return req.rfile.read(body_len)
 
+    def _set_header(self, name, value):
+        self._resp_headers[name] = value
+
+    def _send_header(self, req):
+        for name in  self._resp_headers.keys():
+            req.send_header(name, self._resp_headers[name])
+
     def _set_resp(self, code: int, msg: str):
         self._resp_code = code
         self._resp_msg  = msg
@@ -52,6 +60,9 @@ class BaseRequestHandler(ABC):
             logger.warn(f"{self.__req_line} -- Handle failed [{self._resp_code}]: {self._resp_msg}")
 
     def _send_resp(self, req: RequestRouter):
+        if self._resp_code == 403 or self._resp_code == 405 and self._read_session_id(req) is not None:
+            self._set_header("Set-Cookie", "session_id=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT")
+        self._send_header(req)
         req.send_response(self._resp_code)
         if self._resp_code == 200 and self._resp_msg is not None:
             req.send_header('Content-type', 'application/json' if is_json(self._resp_msg) else 'text/plain')

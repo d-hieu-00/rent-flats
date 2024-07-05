@@ -14,11 +14,14 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue3-toastify": "^0.2.1",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "@tsconfig/node20": "^20.1.2",
+    "@types/bootstrap": "^5.2.10",
     "@types/node": "^20.11.28",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/tsconfig": "^0.5.1",
@@ -26,7 +29,6 @@
     "npm-run-all2": "^6.1.2",
     "typescript": "~5.4.0",
     "vite": "^5.1.6",
-    "vue-tsc": "^2.0.6",
-    "vue3-toastify": "^0.2.1"
+    "vue-tsc": "^2.0.6"
   }
 }
