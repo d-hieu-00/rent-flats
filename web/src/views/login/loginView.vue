@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { toast } from 'vue3-toastify';
-import { useStore } from 'vuex';
-</script>
-
 <template>
     <div id="login">
         <div class="card shadow" style="width: 30%;">
@@ -38,81 +31,78 @@ import { useStore } from 'vuex';
 </template>
 
 <style scoped>
-@import url("./loginView.scss");
+    @import url("./loginView.scss");
 </style>
 
-<script lang="ts">
-import { userApis } from '../../apis/user';
+<script setup lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { toast } from 'vue3-toastify';
+import { useStore } from 'vuex';
+import { userApis } from '@/apis/user';
+import { SEESION_ID } from '@/config';
 import { getCookie, fetchRespError, isRespError } from '@/utils'
-import { SEESION_ID } from '../../config';
 
-export default {
-    name: 'LoginForm',
-    data() {
-        return {
-            username: "",
-            password: "",
-            passwordFieldIcon: function () { return this.hidePassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"; },
-            passwordFieldType: function () { return this.hidePassword ? "password" : "text"; },
-            passwordIsInputed: function () { return this.password !== "" },
-            hidePassword: true,
-            usernameErr: false,
-            passwordErr: false,
-            errorMessage: "",
-            loginText: "Log In",
-            store: useStore(),
-        };
-    },
-    methods: {
-        validate() {
-            this.usernameErr = false;
-            this.passwordErr = false;
-            this.errorMessage = "";
+// Define variables
+var username = "";
+var password = "";
+var hidePassword = true;
+var usernameErr = false;
+var passwordErr = false;
+var errorMessage = "";
+var loginText = "Log In";
+const store = useStore();
 
-            if (this.username === "" || this.username.length < 4) {
-                this.usernameErr = true;
-                this.errorMessage = "Email must not empty and length must be greater than 4";
+const passwordFieldIcon = () => { return hidePassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"; };
+const passwordFieldType = () => { return hidePassword ? "password" : "text"; };
+const passwordIsInputed = () => { return password !== "" };
+const validate = () => {
+    usernameErr = false;
+    passwordErr = false;
+    errorMessage = "";
+
+    if (username === "" || username.length < 4) {
+        usernameErr = true;
+        errorMessage = "Email must not empty and length must be greater than 4";
+    }
+
+    if (password === "" || password.length < 4) {
+        passwordErr = true;
+        errorMessage = "Password must not empty and length must be greater than 4";
+    }
+
+    return true && !usernameErr && !passwordErr;
+};
+
+const doLogin = () => {
+    if (!validate()) {
+        toast.warn(errorMessage);
+        return;
+    }
+
+    loginText = "Loading...";
+    userApis.login(username, password)
+        .then(async (resp) => {
+            const data = await resp.json();
+            if (isRespError(data)) {
+                throw fetchRespError(data);
             }
-
-            if (this.password === "" || this.password.length < 4) {
-                this.passwordErr = true;
-                this.errorMessage = "Password must not empty and length must be greater than 4";
+            if (!getCookie(SEESION_ID)) {
+                throw "Not found cookie";
             }
-
-            return true && !this.usernameErr && !this.passwordErr;
-        },
-        doLogin() {
-            if (!this.validate()) {
-                toast.warn(this.errorMessage);
-                return;
-            }
-
-            this.loginText = "Loading...";
-            userApis.login(this.username, this.password)
-                .then(async (resp) => {
-                    const data = await resp.json();
-                    if (isRespError(data)) {
-                        throw fetchRespError(data);
-                    }
-                    if (!getCookie(SEESION_ID)) {
-                        throw "Not found cookie";
-                    }
-                    toast.success("Log In successfully");
-                    this.store.dispatch("auth/fetchUser");
-                    // TODO: route to home
-                }, async (respErr) => {
-                    const data = await respErr.json();
-                    throw fetchRespError(data);
-                })
-                .catch(err => {
-                    this.errorMessage = err;
-                    toast.error(err);
-                    this.store.dispatch("auth/delUserInfo");
-                })
-                .finally(() => {
-                    this.loginText = "Log In";
-                })
-        },
-    },
+            toast.success("Log In successfully");
+            store.dispatch("auth/fetchUser");
+            // TODO: route to home
+        }, async (respErr) => {
+            const data = await respErr.json();
+            throw fetchRespError(data);
+        })
+        .catch(err => {
+            errorMessage = err;
+            toast.error(err);
+            store.dispatch("auth/delUserInfo");
+        })
+        .finally(() => {
+            loginText = "Log In";
+        })
 };
 </script>

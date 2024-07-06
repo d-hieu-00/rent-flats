@@ -4,8 +4,6 @@ import { getCookie, delCookie, isRespError, fetchRespError, isUndefined } from '
 import { SEESION_ID } from '../../config';
 import { emitEvent } from '@/utils';
 
-// const emit = defineEmits(['user-info-change']);
-
 // initial state
 const state = {
     userInfo: {
@@ -102,7 +100,6 @@ const actions = {
 
         console.log("delUserInfo", state.loggedIn)
         emitEvent('user-info-change');
-        defineEmits(['user-info-change'])('user-info-change', 1)
         delCookie(SEESION_ID);
         dispatch("stopInterval");
     },

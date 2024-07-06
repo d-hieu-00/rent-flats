@@ -1,12 +1,3 @@
-<script setup lang="ts">
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
-import Navigation from './components/navigation/navigation.vue'
-import { RouterLink, RouterView } from 'vue-router'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-</script>
-
 <template>
     <Navigation />
     <div class="router-view">
@@ -21,17 +12,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
     }
 </style>
 
-<script lang="ts">
-import { ref } from 'vue'
-import { toast } from 'vue3-toastify';
-import { useStore } from 'vuex'
+<script setup lang="ts">
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import Navigation from '@/components/navigation/navigation.vue'
+import { RouterView } from 'vue-router'
 
-
-export default {
-    components: {},
-    data() {
-    },
-    methods: {
-    },
-}
 </script>

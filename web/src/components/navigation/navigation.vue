@@ -1,30 +1,3 @@
-<script setup lang="ts">
-import { RouterLink } from 'vue-router'
-import { useStore } from 'vuex'
-import { ref } from 'vue'
-import { onMounted, onUnmounted } from 'vue';
-import { onEvent, offEvent } from '@/utils'
-
-const store = useStore();
-var isLoggedIn = ref(store.state.auth.loggedIn);
-
-onMounted(() => {
-    console.log("onMounted", isLoggedIn);
-    onEvent('user-info-change', updateUserInfo)
-});
-
-onUnmounted(() => {
-    offEvent('user-info-change', updateUserInfo);
-});
-
-const updateUserInfo = (data: any ) => {
-    console.log("udpateUserInfo", data)
-    isLoggedIn.value = store.state.auth.loggedIn;
-    console.log("udpateUserInfod", isLoggedIn)
-}
-
-</script>
-
 <template>
     <nav class="navbar navbar-expand-lg">
         <div class="navbar-left">
@@ -44,25 +17,29 @@ const updateUserInfo = (data: any ) => {
     </nav>
 </template>
 
-
 <style scoped>
-    @import url("./navigation.css");
+    @import url("./navigation.scss");
 </style>
 
-<script lang="ts">
-import { toast } from 'vue3-toastify';
-export default {
-    components: {},
-    data() {
-        return {
-            // isLoggedIn: false,
-        }
-    },
-    methods: {
-        update() {
-            
-            // console.log(store.state.auth);
-        },
-    }
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import { useStore } from 'vuex'
+import { ref } from 'vue'
+import { onMounted, onUnmounted } from 'vue';
+import { onEvent, offEvent } from '@/utils'
+
+const store = useStore();
+var isLoggedIn = ref(store.state.auth.loggedIn);
+
+onMounted(() => {
+    onEvent('user-info-change', updateUserInfo)
+});
+
+onUnmounted(() => {
+    offEvent('user-info-change', updateUserInfo);
+});
+
+const updateUserInfo = (_: any | undefined) => {
+    isLoggedIn.value = store.state.auth.loggedIn;
 }
 </script>
