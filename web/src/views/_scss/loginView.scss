@@ -1,0 +1,75 @@
+@keyframes fadeIn {
+  0% {
+    margin-top: -10%;
+    opacity: 0;
+  }
+
+  100% {
+    margin-top: 0%;
+    opacity: 1;
+  }
+}
+
+div#login {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  input:focus {
+    box-shadow: none;
+  }
+
+  .first-span {
+    width: 100px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  animation: fadeIn ease 0.3s;
+}
+
+.border-tr-3 {
+  border-top-right-radius: 3px;
+}
+
+.border-br-3 {
+  border-bottom-right-radius: 3px;
+}
+
+.border-tl-3 {
+  border-top-left-radius: 3px;
+}
+
+.border-bl-3 {
+  border-bottom-left-radius: 3px;
+}
+
+.border-tr-0 {
+  border-top-right-radius: 0px;
+}
+
+.border-br-0 {
+  border-bottom-right-radius: 0px;
+}
+
+.border-tl-0 {
+  border-top-left-radius: 0px;
+}
+
+.border-bl-0 {
+  border-bottom-left-radius: 0px;
+}
+
+.img-head {
+  height: 235px;
+  object-fit: contain !important;
+  background-color: #1E3148;
+}
+
+.input-err {
+  border: 1px solid red;
+}

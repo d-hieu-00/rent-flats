@@ -11,7 +11,7 @@ export const router = createRouter({
         {
             path: '/login',
             name: 'login',
-            component: () => import('../views/login/loginView.vue')
+            component: () => import('../views/loginView.vue')
         },
         {
             path: '/admin/login',
@@ -21,7 +21,7 @@ export const router = createRouter({
         {
             path: '/about',
             name: 'about',
-            component: () => import('../views/AboutView.vue'),
+            component: () => import('../views/aboutView.vue'),
             meta: {
                 requiredLoggedIn: true,
                 requiredAdmin: true,
