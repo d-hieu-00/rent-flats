@@ -9,11 +9,12 @@ from handler.db_handler import DBHanlder
 from handler.request_router import RequestRouter
 from handler.request_handler.base_request_handler import BaseRequestHandler
 
-class LoginHandler(BaseRequestHandler):
+class LogoutHandler(BaseRequestHandler):
     def method():   return "POST"
     def path():     return "/api/logout"
 
     def _handle(self, req: RequestRouter):
+        print("start--handle logout")
         # Check session_id
         session_id = self._read_session_id(req)
         if session_id is None or is_uuid(session_id) == False:
@@ -28,6 +29,7 @@ class LoginHandler(BaseRequestHandler):
             if resp.keys().__contains__("error"):
                 self._set_resp(400, resp["error"])
             else:
+                self._set_header("Set-Cookie", "session_id=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT")
                 self._set_resp(200, db_ret)
         else:
             self._set_resp(500, "Failed to login")

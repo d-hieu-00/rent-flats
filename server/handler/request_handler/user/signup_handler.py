@@ -17,13 +17,14 @@ class SignupHandler(BaseRequestHandler):
     def path():     return "/api/signup"
 
     def _validate_data(self, key, data):
+        data = data.strip()
         if type(data) != type(""):
             return "Invalid data"
-        if key == "username" and (len(data) > 256 or re.match(r"^[a-zA-Z0-9_-]{4,256}$", data) == False or len(data) < 4):
-            return "Username must be larger than 4 and less than 256 characters. Allow characters a-z0-9 and _-"
+        if key == "username" and (len(data) > 256 or re.match(r"^[a-zA-Z0-9 _-]{4,256}$", data) == None or len(data) < 4):
+            return "Username must be larger than 4 and less than 256 characters. Allow characters a-z0-9,'_','-' and whitespace."
         if key == "password" and (len(data) > 256 or len(data) < 4):
             return "Password must be larger than 4 and less than 256 characters."
-        if key == "email" and (re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", data) == False):
+        if key == "email" and (re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", data) == None):
             return "Invalid email"
         return None
 
@@ -43,6 +44,11 @@ class SignupHandler(BaseRequestHandler):
             self._set_resp(400, "Invalid body")
             return
         body = json.loads(body)
+        # Strip whitespace
+        body["username"] = body["username"].strip()
+        body["password"] = body["password"].strip()
+        body["email"] = body["email"].strip()
+        # Validate data
         err = self._validate_body(body)
         if err is not None:
             self._set_resp(400, err)

@@ -38,6 +38,10 @@ class LoginHandler(BaseRequestHandler):
             self._set_resp(400, "Invalid body")
             return
         body = json.loads(body)
+        # Strip whitespace
+        body["username"] = body["username"].strip()
+        body["password"] = body["password"].strip()
+        # Validate body data
         err = self._validate_body(body)
         if err is not None:
             self._set_resp(400, err)

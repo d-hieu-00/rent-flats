@@ -24,7 +24,7 @@
 .search-input {
   margin-left: 2rem;
   padding: 0.4rem 1.2rem;
-  border-radius: 2rem;
+  border-radius: 5px;
   border: 1px solid #ccc;
   outline: none;
   font-size: 1rem;
@@ -33,7 +33,7 @@
 }
 
 .search-input:focus {
-  width: 350px;
+  width: 400px;
   border: 1px solid #94c2fb;
   transition: all 0.3s;
 }
@@ -44,6 +44,8 @@
 
 .navbar-right {
   display: flex;
+  justify-content: flex-end;
+  width: 40%;
 }
 
 .navbar-right a {

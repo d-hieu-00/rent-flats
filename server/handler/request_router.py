@@ -73,6 +73,7 @@ class RequestRouter(BaseHTTPRequestHandler):
         if handler:
             handler().handle(self)
         elif in_path.startswith("/api/"):
+            logger.warn(self.__class_name, f"No handler found for {method} {in_path}")
             self.handle_ui_request(403)
         else:
             self.handle_ui_request()
@@ -82,7 +83,7 @@ class RequestRouter(BaseHTTPRequestHandler):
         req_file  = urlparse(self.path).path.lstrip('/')
         filename  = os.path.join(self.__web_dir, req_file)
         if os.path.isfile(filename) == False:
-            resp_code = 200 if is_not_file_name(req_file) else 404
+            resp_code = resp_code if is_not_file_name(req_file) else 404
             filename = os.path.join(self.__web_dir, 'index.html')
         self.send_file(filename, resp_code)
 

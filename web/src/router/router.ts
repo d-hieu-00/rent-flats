@@ -6,26 +6,36 @@ export const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: () => import('../views/homeView.vue')
+            component: () => import('@/views/homeView.vue')
         },
         {
             path: '/login',
             name: 'login',
-            component: () => import('../views/loginView.vue')
+            component: () => import('@/views/loginView.vue')
         },
         {
-            path: '/admin/login',
-            name: 'adminLogin',
-            component: () => import('../views/admin/loginView.vue')
+            path: '/signup',
+            name: 'signup',
+            component: () => import('@/views/signupView.vue')
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('@/views/profileView.vue')
         },
         {
             path: '/about',
             name: 'about',
-            component: () => import('../views/aboutView.vue'),
+            component: () => import('@/views/aboutView.vue'),
             meta: {
                 requiredLoggedIn: true,
                 requiredAdmin: true,
             },
-        }
+        },
+        {
+            path: '/admin/login',
+            name: 'adminLogin',
+            component: () => import('@/views/admin/loginView.vue')
+        },
     ]
 });

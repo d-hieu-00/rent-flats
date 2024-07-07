@@ -9,6 +9,7 @@ from setting.set_config_handler import SetConfigHandler
 from user.get_user_handler import GetUserHandler
 from user.signup_handler import SignupHandler
 from user.login_handler import LoginHandler
+from user.logout_handler import LogoutHandler
 
 def register_handler():
     RequestRouter.register_handler(GetConfigHandler.method(), GetConfigHandler.path(), GetConfigHandler)
@@ -17,4 +18,5 @@ def register_handler():
     RequestRouter.register_handler(GetUserHandler.method(), GetUserHandler.path(), GetUserHandler)
     RequestRouter.register_handler(SignupHandler.method(), SignupHandler.path(), SignupHandler)
     RequestRouter.register_handler(LoginHandler.method(), LoginHandler.path(), LoginHandler)
+    RequestRouter.register_handler(LogoutHandler.method(), LogoutHandler.path(), LogoutHandler)
 

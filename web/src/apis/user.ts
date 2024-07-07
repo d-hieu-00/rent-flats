@@ -1,5 +1,11 @@
 import { BASE_URL } from '../config'
 
+export interface IUserData {
+  username: string;
+  password: string;
+  email: string;
+};
+
 class UserApis {
   private readonly baseUrl: string;
 
@@ -21,6 +27,10 @@ class UserApis {
 
   public logout(): Promise<Response> {
     return fetch(this.baseUrl + "/logout", { method: "POST" });
+  }
+
+  public signup(data: IUserData): Promise<Response> {
+    return fetch(this.baseUrl + "/signup", { method: "POST", body: JSON.stringify(data) });
   }
 }
 

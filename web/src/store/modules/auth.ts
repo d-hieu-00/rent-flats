@@ -31,7 +31,6 @@ const getters = {
   },
 
   isLoggedIn: (state: any) => {
-    console.log("form getters.isLoggedIn", state)
     return state.loggedIn;
   },
 
@@ -66,7 +65,7 @@ const actions = {
       }, async (respErr: Response) => {
         throw fetchRespError(await respErr.json());
       }).catch(err => {
-        toast.error(err);
+        toast.error(err,{ autoClose: 3000 });
         if (!isUndefined(state.logoutCallback))
           state.logoutCallback();
         dispatch("delUserInfo");
@@ -75,7 +74,7 @@ const actions = {
 
   startInterval({ state, dispatch }: any) {
     if (isUndefined(state.intervalId)) {
-      state.intervalId = setInterval(() => dispatch("fetchUser"), 3000);
+      state.intervalId = setInterval(() => dispatch("fetchUser"), 30000);
     }
   },
 
@@ -85,7 +84,6 @@ const actions = {
     state.userInfo.isAdmin = isAdmin;
     state.userInfo.others = others;
     state.loggedIn = true;
-    console.log("setUserInfo", state.loggedIn)
     emitEvent('user-info-change');
     dispatch("startInterval");
   },
@@ -97,7 +95,6 @@ const actions = {
     state.userInfo.others = {};
     state.loggedIn = false;
 
-    console.log("delUserInfo", state.loggedIn)
     emitEvent('user-info-change');
     delCookie(SEESION_ID);
     dispatch("stopInterval");
@@ -112,14 +109,10 @@ const actions = {
   },
 }
 
-// mutations
-const mutations = {
-}
-
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations
+  mutations: {}
 }

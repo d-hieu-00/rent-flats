@@ -2,9 +2,9 @@ import '@/assets/main.css';
 import 'vue3-toastify/dist/index.css';
 
 import { createApp } from 'vue'
+import { store } from './store'
+import { router } from './router';
 import app from './app.vue'
-import store from './store'
-import router from './router';
 import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -25,9 +25,11 @@ createApp(app)
     .use(store)
     .use(router)
     .use(Vue3Toastify, {
-            autoClose: 1500,
+            autoClose: 2000,
             position: "bottom-left",
             pauseOnHover: false,
-            hideProgressBar: true
+            hideProgressBar: true,
+            clearOnUrlChange: false,
+            transition: "flip"
         } as ToastContainerOptions)
     .mount('#app');

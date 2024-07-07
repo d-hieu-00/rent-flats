@@ -1,15 +1,19 @@
 <template>
   <div id="login">
     <div class="card shadow" style="width: 30%;">
-      <img class="card-img-top img-head" src="@/assets/head.png" alt="Rent House">
-      <form class="card-body" @submit.prevent="doLogin">
-        <div class="input-group has-validation mb-3">
+      <div class="card-header pt-3 pb-3">
+        <p class="ps-4 m-0 fs-2 fw-semibold">Log In Form</p>
+      </div>
+      <form class="card-body ms-4 me-4 mt-3" @submit.prevent="doLogin">
+        <p class="mt-3 mb-1 fw-bold">Welcome to Rent Houses.</p>
+        <p>Please input your email and password to log in.</p>
+        <div class="input-group has-validation mb-3 mt-4">
           <span class="first-span input-group-text border-tr-0 border-br-0 border-tl-3 border-bl-3">Email</span>
           <input class="form-control border-tl-0 border-bl-0 border-tr-3 border-br-3"
             :class="usernameErr ? 'is-invalid' : ''" type="text" v-model="username" placeholder="abc@company.org"
             autocomplete="off">
         </div>
-        <div class="input-group has-validation mb-3">
+        <div class="input-group has-validation mb-1">
           <span class="first-span input-group-text border-tr-0 border-br-0 border-tl-3 border-bl-3">Password</span>
           <input class="form-control border-tl-0 border-bl-0" :class="[
               passwordErr ? 'is-invalid' : '',
@@ -21,12 +25,9 @@
             </i>
           </span>
         </div>
-        <div class="mb-3">
-          <input class="btn btn-success mb-3 w-100" type="submit" :value="loginText" style="border-radius: 3px;"
-            :disabled="loginText !== 'Log In'">
-          <div class="form-text">By logging in you agree accept our <a href="#">Privacy Policy</a> and <a href="#">Terms
-              of Use</a>.</div>
-        </div>
+        <a :class="customLinkClass" href="#">Forgot your password?</a>
+        <input class="btn btn-success w-100 border-3 mt-3" type="submit" :value="loginText" :disabled="loginText !== 'Log In'">
+        <p class="mt-2 mb-2">Not a member? <RouterLink to="/signup" :class="customLinkClass">Sign up now</RouterLink>.</p>
       </form>
     </div>
   </div>
@@ -39,50 +40,66 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { toast } from 'vue3-toastify';
+import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import { userApis } from '@/apis/user';
 import { SEESION_ID } from '@/config';
 import { getCookie, fetchRespError, isRespError } from '@/utils'
+import { RouterLink } from 'vue-router'
 
 // Define variables
-var username = "";
-var password = "";
-var hidePassword = true;
-var usernameErr = false;
-var passwordErr = false;
-var errorMessage = "";
-var loginText = "Log In";
+var username = ref("");
+var password = ref("");
+var hidePassword = ref(true);
+var usernameErr = ref(false);
+var passwordErr = ref(false);
+var errorMessage = ref("");
+var loginText = ref("Log In");
 const store = useStore();
+const router = useRouter();
+const customLinkClass = "link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover";
 
-const passwordFieldIcon = () => { return hidePassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"; };
-const passwordFieldType = () => { return hidePassword ? "password" : "text"; };
-const passwordIsInputed = () => { return password !== "" };
+const passwordFieldIcon = () => { return hidePassword.value ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"; };
+const passwordFieldType = () => { return hidePassword.value ? "password" : "text"; };
+const passwordIsInputed = () => { return password.value !== "" };
 const validate = () => {
-  usernameErr = false;
-  passwordErr = false;
-  errorMessage = "";
+  usernameErr.value = false;
+  passwordErr.value = false;
+  errorMessage.value = "";
 
-  if (username === "" || username.length < 4) {
-    usernameErr = true;
-    errorMessage = "Email must not empty and length must be greater than 4";
+  if (username.value === "" || username.value.length < 4) {
+    usernameErr.value = true;
+    errorMessage.value = "Email must not empty and length must be greater than 4";
   }
 
-  if (password === "" || password.length < 4) {
-    passwordErr = true;
-    errorMessage = "Password must not empty and length must be greater than 4";
+  if (password.value === "" || password.value.length < 4) {
+    passwordErr.value = true;
+    errorMessage.value = "Password must not empty and length must be greater than 4";
   }
 
-  return true && !usernameErr && !passwordErr;
+  return true && !usernameErr.value && !passwordErr.value;
+};
+
+onMounted(() => {
+  const token = getCookie(SEESION_ID);
+  if (token) {
+    routeToHome();
+  }
+});
+
+const routeToHome = () => {
+  router.push("/");
 };
 
 const doLogin = () => {
   if (!validate()) {
-    toast.warn(errorMessage);
+    toast.warn(errorMessage.value, { autoClose: 3000 });
     return;
   }
 
-  loginText = "Loading...";
-  userApis.login(username, password)
+  loginText.value = "Loading...";
+  userApis.login(username.value, password.value)
     .then(async (resp) => {
       const data = await resp.json();
       if (isRespError(data)) {
@@ -93,18 +110,18 @@ const doLogin = () => {
       }
       toast.success("Log In successfully");
       store.dispatch("auth/fetchUser");
-      // TODO: route to home
+      routeToHome();
     }, async (respErr) => {
       const data = await respErr.json();
       throw fetchRespError(data);
     })
     .catch(err => {
-      errorMessage = err;
-      toast.error(err);
+      errorMessage.value = err;
+      toast.error(err, { autoClose: 3000 });
       store.dispatch("auth/delUserInfo");
     })
     .finally(() => {
-      loginText = "Log In";
+      loginText.value = "Log In";
     })
 };
 </script>

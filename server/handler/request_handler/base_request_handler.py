@@ -22,6 +22,10 @@ class BaseRequestHandler(ABC):
     def path():
         pass
 
+    @property
+    def __server_name(self) -> str:
+        return "hehe"
+
     def __init__(self) -> None:
         super().__init__()
         self._resp_headers = {}
@@ -49,6 +53,7 @@ class BaseRequestHandler(ABC):
         self._resp_headers[name] = value
 
     def _send_header(self, req):
+        req.send_header("Server", self.__server_name)
         for name in  self._resp_headers.keys():
             req.send_header(name, self._resp_headers[name])
 

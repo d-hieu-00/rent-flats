@@ -40,7 +40,6 @@ class DBMain(DBPgSql):
     def __call_db_fn(self, fn, *args):
         _bind_args = "%s," * len(args)
         _call_fn = f"SELECT {fn}({_bind_args[:-1]})"
-        print(_call_fn, args)
         return self._read(_call_fn, *args)
 
     def get_user_by_session_id(self, session_id):

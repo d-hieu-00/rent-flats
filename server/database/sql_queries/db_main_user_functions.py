@@ -106,12 +106,12 @@ def queries(schema_name):
                     RETURN jsonb_build_object('error', 'Username is existed. Please input other username');
                 END IF;
 
-                IF EXISTS (SELECT 1 FROM {schema_name}.users WHERE email = in_data->>'email' AND state != 0 AND admin = 1) THEN
-                    RETURN jsonb_build_object('error', 'Email is existed. Please choose input other email');
+                IF EXISTS (SELECT 1 FROM {schema_name}.users WHERE lower(email) = lower(in_data->>'email') AND state != 0 AND admin = 0) THEN
+                    RETURN jsonb_build_object('error', 'Email is existed. Please input other email');
                 END IF;
 
                 INSERT INTO {schema_name}.users(username, password, salt, email, additional)
-                VALUES (in_data->>'username', in_data->>'password', in_data->>'salt', in_data->>'email', in_data->'additional')
+                VALUES (in_data->>'username', in_data->>'password', in_data->>'salt', lower(in_data->>'email'), in_data->'additional')
                 RETURNING user_id INTO out_user_id;
 
                 IF out_user_id IS NULL THEN
@@ -164,8 +164,8 @@ def queries(schema_name):
                     RETURN jsonb_build_object('error', 'Username is existed. Please input other username');
                 END IF;
 
-                IF EXISTS (SELECT 1 FROM {schema_name}.users WHERE email = in_data->>'email' AND state != 0 AND admin = 1) THEN
-                    RETURN jsonb_build_object('error', 'Email is existed. Please choose input other email');
+                IF EXISTS (SELECT 1 FROM {schema_name}.users WHERE lower(email) = lower(in_data->>'email') AND state != 0 AND admin = 1) THEN
+                    RETURN jsonb_build_object('error', 'Email is existed. Please input other email');
                 END IF;
 
                 INSERT INTO {schema_name}.users(username, password, salt, email, admin, additional)
