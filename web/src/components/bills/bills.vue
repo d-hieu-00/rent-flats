@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { billApis } from '@/apis/bill.ts';
 
 const props = defineProps({
   houseId: {
@@ -32,11 +33,17 @@ watch(houseIdRef, (newHouseId) => {
 });
 
 var houseIdData = ref(props.houseId);
-var inited = ref(false);
+var billData = ref({});
 
 onMounted(() => {
-  houseIdData.value = props.houseId;
-  inited.value = true;
+  billApis.fetchBills(props.houseId).then((response) => {
+    return response.json().then((data) => {
+      billData.value = data.bills;
+      console.log(billData.value);
+    });
+  }).catch((error) => {
+    console.error(error);
+  });
 });
 
 const close = () => {

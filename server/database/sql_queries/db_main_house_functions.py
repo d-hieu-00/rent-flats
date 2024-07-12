@@ -97,14 +97,14 @@ def queries(schema_name):
                 END IF;
 
                 exec_sql := 'FROM    {schema_name}.__house_bills __house_bills
-                    WHERE   house_id = in_house_id AND user_id = $1
+                    WHERE   house_id = $1 AND user_id = $2
                     ';
                 exec_count_sql := 'SELECT COUNT(1) ' || exec_sql;
                 --
                 exec_sql := 'SELECT  jsonb_agg(row_to_json(__house_bills) ORDER BY house_id DESC) ' || exec_sql;
                 -- EXEC
-                EXECUTE exec_sql INTO out_houses USING (user_data->>'user_id')::integer;
-                EXECUTE exec_count_sql INTO out_count USING (user_data->>'user_id')::integer;
+                EXECUTE exec_sql INTO out_houses USING in_house_id, (user_data->>'user_id')::integer;
+                EXECUTE exec_count_sql INTO out_count USING in_house_id, (user_data->>'user_id')::integer;
 
                 RETURN jsonb_build_object(
                     'bills', out_houses,

@@ -22,6 +22,7 @@
     .row {
         margin-right: 0;
         margin-left: 0;
+        width: 100%;
     }
 
     .col-4 {
@@ -29,9 +30,9 @@
         margin-bottom: 1rem;
     }
 
-    .row > .col-4:nth-child(1) .house-item {
-        margin-left: 0rem !important;
-    }
+    // .row > .col-4:nth-child(n+4) .house-item {
+    //     margin-left: 0rem !important;
+    // }
 
     .house-item {
         flex: 1;

@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <Bills :house-id="inputHouseId" @houseIdChange="updateInHouseId"/>
+    <Bills v-if="inputHouseId > 0" :house-id="inputHouseId" @houseIdChange="updateInHouseId"/>
   </div>
 </template>
 
@@ -166,11 +166,16 @@ const updateHousesDataShow = () => {
     }
     houses.push(housesData.value[i]);
   }
+
+  if (houses.length > 0) {
+    housesDataShow.value.push(houses);
+  }
 };
 
 const showDetail = (house: House) => {
-  inputHouseId.value = house.house_id;
-  console.log('Detail for house ID:', inputHouseId.value);
+  toast.error(`Not implemented`);
+  // inputHouseId.value = house.house_id;
+  // console.log('Detail for house ID:', inputHouseId.value);
 };
 
 const showBill = (house: House) => {
