@@ -1,4 +1,6 @@
 import '@/assets/main.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.min.js'
 import 'vue3-toastify/dist/index.css';
 
 import { createApp } from 'vue'

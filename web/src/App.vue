@@ -1,22 +1,25 @@
 <template>
-    <Navigation />
-    <div class="router-view">
-        <RouterView />
-    </div>
+  <Navigation />
+  <div class="main">
+    <div><RouterView class="router-view"/></div>
+    <Footer />
+</div>
 </template>
 
 <style scoped>
-    .router-view {
-        margin: 0 6rem;
-        height: 100%;
-    }
+  .router-view {
+    margin: 0 20rem;
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+  }
 </style>
 
 <script setup lang="ts">
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
 import Navigation from '@/components/navigation/navigation.vue'
+import Footer from '@/components/footer/footer.vue'
 import { RouterView } from 'vue-router'
-
 </script>

@@ -1,0 +1,10 @@
+#houses {
+    > .house-item:nth-child(1) {
+        margin-left: 0rem !important;
+    }
+
+    .house-item {
+        border: 3px;
+        margin-left: 1rem;
+    }
+}

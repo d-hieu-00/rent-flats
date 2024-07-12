@@ -26,7 +26,10 @@ class GetUserHandler(BaseRequestHandler):
             if resp.keys().__contains__("error"):
                 self._set_resp(400, resp["error"])
             else:
-                self._set_resp(200, db_ret)
+                del resp["password"]
+                del resp["salt"]
+                del resp["state"]
+                self._set_resp(200, json.dumps(resp))
         else:
             self._set_resp(500, "Failed to query user")
 

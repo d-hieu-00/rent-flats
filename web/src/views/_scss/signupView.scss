@@ -5,7 +5,7 @@
   }
 
   100% {
-    margin-top: 0%;
+    margin-top: 3.5rem;
     opacity: 1;
   }
 }
@@ -14,8 +14,8 @@ div#signup {
   align-items: center;
   display: flex;
   justify-content: center;
-  width: 100%;
   height: 100%;
+  margin-top: 3.5rem;
   animation: fadeIn ease 0.3s;
 
   input:focus {
@@ -28,6 +28,11 @@ div#signup {
 
   input, span {
     font-size: 1.15rem;
+  }
+
+  #header {
+    background-color: #005A75;
+    color: white;
   }
 }
 

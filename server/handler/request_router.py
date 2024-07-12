@@ -34,7 +34,11 @@ class Router:
 
 class RequestRouter(BaseHTTPRequestHandler):
     __web_dir    = os.path.join(os.getcwd(), config.WEB_DIST)
+    __img_dir    = os.path.join(os.getcwd(), config.IMAGE_PATH)
     __req_router = Router()
+
+    @property
+    def req_img_path(self): return '/__images/'
 
     @classmethod
     def register_handler(cls, method, path, handler):
@@ -64,6 +68,8 @@ class RequestRouter(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/api/'):
             self.route_request('GET')
+        elif self.path.startswith(self.req_img_path):
+            self.handle_img_request()
         else:
             self.handle_ui_request()
 
@@ -77,6 +83,16 @@ class RequestRouter(BaseHTTPRequestHandler):
             self.handle_ui_request(403)
         else:
             self.handle_ui_request()
+
+    def handle_img_request(self):
+        # Serve UI files
+        req_file  = urlparse(self.path).path.replace(self.req_img_path, "")
+        filename  = os.path.join(self.__img_dir, req_file)
+        if os.path.isfile(filename) == False:
+            self.send_response(404)
+            self.end_headers()
+            return
+        self.send_file(filename, 200)
 
     def handle_ui_request(self, resp_code = 200):
         # Serve UI files

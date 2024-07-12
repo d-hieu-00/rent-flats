@@ -1,0 +1,28 @@
+@keyframes fadeIn {
+  0% {
+    // margin-bottom: -10%;
+    opacity: 0;
+  }
+
+  100% {
+    // margin-bottom: 0%;
+    opacity: 1;
+  }
+}
+
+#footer {
+  background-color: #181818;
+  min-height: 300px;
+  width: 100%;
+  color: white;
+  animation: fadeIn ease 0.3s;
+
+  .content {
+    margin: 0 20rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 3rem;
+    align-items: center;
+    flex-direction: row;
+  }
+}

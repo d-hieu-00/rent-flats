@@ -56,6 +56,25 @@ export function fetchRespError(data: object | any) : string {
     return "";
 }
 
+export function priceToString(price: any) {
+    if (typeof price === "number") {
+        return price.toLocaleString('vi-VN', { style: "currency", currency: "VND" });
+    } else {
+        return price;
+    }
+}
+
+export function buildQueryString(params: { [key: string]: any }) : string {
+    const query = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
+    return query;
+}
+
+// export function buildImageUrl(path: string) : string {
+//     return query;
+// }
+
 const eventBus = ref(new Map());
 
 const emitEvent = (eventName: string, payload?: any) => {

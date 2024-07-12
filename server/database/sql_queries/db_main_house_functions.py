@@ -12,7 +12,7 @@ def queries(schema_name):
             BEGIN
                 exec_sql := 'FROM    __houses
                     WHERE   $5 @> jsonb_agg(state)
-                            AND ($1 = '''' OR POSITION($1, addtional->>''search'') > 0 OR POSITION($1, address))
+                            AND ($1 = '''' OR POSITION($1, addtional->>''search'') > 0)
                             AND ($2 <= 0 OR capacity = $2)
                             AND ($3 <= 0 OR base_price >= $3)
                             AND ($4 <= 0 OR base_price <= $4)

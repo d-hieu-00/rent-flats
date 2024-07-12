@@ -11,6 +11,8 @@ from user.signup_handler import SignupHandler
 from user.login_handler import LoginHandler
 from user.logout_handler import LogoutHandler
 
+from house.get_houses_handler import GetHousesHandler
+
 def register_handler():
     RequestRouter.register_handler(GetConfigHandler.method(), GetConfigHandler.path(), GetConfigHandler)
     RequestRouter.register_handler(SetConfigHandler.method(), SetConfigHandler.path(), SetConfigHandler)
@@ -19,4 +21,6 @@ def register_handler():
     RequestRouter.register_handler(SignupHandler.method(), SignupHandler.path(), SignupHandler)
     RequestRouter.register_handler(LoginHandler.method(), LoginHandler.path(), LoginHandler)
     RequestRouter.register_handler(LogoutHandler.method(), LogoutHandler.path(), LogoutHandler)
+
+    RequestRouter.register_handler(GetHousesHandler.method(), GetHousesHandler.path(), GetHousesHandler)
 

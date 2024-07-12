@@ -1,7 +1,7 @@
 <template>
   <div id="signup">
-    <div class="card shadow" style="width: 40%;">
-      <div class="card-header pt-3 pb-3">
+    <div class="card shadow" style="width: 55%;">
+      <div class="card-header pt-3 pb-3" id="header">
         <p class="ps-4 m-0 fs-2 fw-semibold">Sign Up Form</p>
       </div>
       <form class="card-body ms-4 me-4 mt-3" @submit.prevent="doSignup">

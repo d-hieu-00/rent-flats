@@ -2,15 +2,16 @@
   <nav class="navbar navbar-expand-lg">
     <div class="navbar-left">
       <RouterLink to="/" class="logo"> <img src="@/assets/head.png" width="50" height="50"> </RouterLink>
-      <input type="text" placeholder="Find a house? address, type,..." class="search-input">
     </div>
-    <p class="m-0 fw-semibold text-warning">Rent Smarter, Live Better</p>
+    <RouterLink to="/" class="m-0 fw-semibold text-warning link-underline link-underline-opacity-0">
+      Rent Smarter, Live Better
+    </RouterLink>
     <ul class="nav navbar-right">
       <li class="nav-item" v-for="nav in navItems">
-        <RouterLink class="nav-link" v-if="nav.path !== '#' && nav.display"
-          :class="[nav.class, nav.active ? activeNavClass : '' ]" :to="nav.path">{{ nav.txt }}
+        <RouterLink v-if="nav.path !== '#' && nav.display" class="link-offset-2 nav-link"
+          :class="[nav.class, nav.active ? activeNavClass : '']" :to="nav.path">{{ nav.txt }}
         </RouterLink>
-        <a href="#" class="nav-link" v-if="nav.path === '#' && nav.display"
+        <a href="#" v-if="nav.path === '#' && nav.display" class="link-offset-2"
           :class="nav.class" :to="nav.path" @click="nav.click">{{ nav.txt }}
         </a>
       </li>
@@ -27,6 +28,7 @@ import { RouterLink } from 'vue-router'
 import { useStore } from 'vuex'
 import { toast } from 'vue3-toastify'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { onMounted, onUnmounted } from 'vue';
 import { onEvent, offEvent, isRespError, fetchRespError, isUndefined } from '@/utils'
 import { userApis } from '@/apis/user';
@@ -35,8 +37,8 @@ var navItems = ref([
   {
     val: "feedback",
     txt: "Give Feedback",
-    class:"",
-    path: "/feedback",
+    class: "shadow btn btn-warning",
+    path: "#",
     click: () => {},
     active: false,
     roles: { admin: false, user: true, public: false },
@@ -45,7 +47,7 @@ var navItems = ref([
   {
     val: "rented",
     txt: "Rented Houses",
-    class:"",
+    class: "",
     path: "/rented",
     click: () => {},
     active: false,
@@ -85,7 +87,7 @@ var navItems = ref([
   {
     val: "signup",
     txt: "Sign Up",
-    class:"card shadow fw-bold bg-success",
+    class: "shadow fw-bold btn bg-success",
     path: "/signup",
     click: () => {},
     active: false,
@@ -95,7 +97,7 @@ var navItems = ref([
   {
     val: "logout",
     txt: "Log out",
-    class:"card card shadow text-dark bg-light fw-bold",
+    class: "shadow fw-bold btn btn-light text-dark bg-light",
     path: "#",
     click: () => logout(),
     active: false,
@@ -105,6 +107,7 @@ var navItems = ref([
 ]);
 
 const store = useStore();
+const router = useRouter();
 const activeNavClass = "fw-bold text-decoration-underline"
 var isLoggedIn = ref(store.getters["auth/isLoggedIn"]);
 var isAdmin = ref(store.getters["auth/isAdmin"]);
@@ -156,6 +159,7 @@ const logout = () => {
       }
       toast.success("Logged out successfully");
       store.dispatch("auth/delUserInfo");
+      router.push("/login");
     }, async (respErr: Response) => {
       throw fetchRespError(await respErr.json());
     }).catch(err => {

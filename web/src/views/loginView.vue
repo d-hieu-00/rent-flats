@@ -1,7 +1,7 @@
 <template>
   <div id="login">
-    <div class="card shadow" style="width: 30%;">
-      <div class="card-header pt-3 pb-3">
+    <div class="card shadow" style="width: 40%;">
+      <div class="card-header pt-3 pb-3" id="header">
         <p class="ps-4 m-0 fs-2 fw-semibold">Log In Form</p>
       </div>
       <form class="card-body ms-4 me-4 mt-3" @submit.prevent="doLogin">
@@ -26,7 +26,7 @@
           </span>
         </div>
         <a :class="customLinkClass" href="#">Forgot your password?</a>
-        <input class="btn btn-success w-100 border-3 mt-3" type="submit" :value="loginText" :disabled="loginText !== 'Log In'">
+        <input class="btn btn-success w-100 border-radius-3 mt-3" type="submit" :value="loginText" :disabled="loginText !== 'Log In'">
         <p class="mt-2 mb-2">Not a member? <RouterLink to="/signup" :class="customLinkClass">Sign up now</RouterLink>.</p>
       </form>
     </div>
