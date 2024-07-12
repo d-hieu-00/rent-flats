@@ -3,8 +3,8 @@ import { router } from './router';
 
 router.beforeEach((to, from, next) => {
     const store = useStore();
-    const isAdmin = store.getters.isAdmin;
-    const isLoggedIn = store.getters.isLoggedIn;
+    const isAdmin = store.getters["auth/isAdmin"];
+    const isLoggedIn = store.getters["auth/isLoggedIn"];
 
     if (to.matched.some(record => record.meta.requiredLoggedIn) && !isLoggedIn) {
         next({ name: 'login' });

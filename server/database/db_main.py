@@ -105,3 +105,27 @@ class DBMain(DBPgSql):
             return json.dumps({"error": "Unknow Error"})
         else:
             return json.dumps(res[0][0])
+
+    def get_rented_house(self, session_id):
+        cur = self.__call_db_fn(f'{self.database_schema}.get_rented_house', session_id)
+        res = cur.fetchall()
+        if len(res) != 1:
+            return json.dumps({"error": "Unknow Error"})
+        else:
+            return json.dumps(res[0][0])
+
+    def get_houses(self, data, capacity = -1, lower_price = -1, upper_price = -1, states = '[1]', others = '{}'):
+        cur = self.__call_db_fn(f'{self.database_schema}.find_house', data, capacity, lower_price, upper_price, states, others)
+        res = cur.fetchall()
+        if len(res) != 1:
+            return json.dumps({"error": "Unknow Error"})
+        else:
+            return json.dumps(res[0][0])
+
+    def get_bills(self, session_id, house_id):
+        cur = self.__call_db_fn(f'{self.database_schema}.get_bills', session_id, house_id)
+        res = cur.fetchall()
+        if len(res) != 1:
+            return json.dumps({"error": "Unknow Error"})
+        else:
+            return json.dumps(res[0][0])

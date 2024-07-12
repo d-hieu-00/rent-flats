@@ -1,5 +1,6 @@
 import sys, pathlib
 import json
+from urllib.parse import parse_qs, urlparse
 
 # Internal
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.parent))
@@ -13,44 +14,33 @@ class GetHousesHandler(BaseRequestHandler):
     def method():   return "GET"
     def path():     return "/api/houses"
 
-    def _handle(self, req: RequestRouter):
-        # Check session_id
-        session_id = self._read_session_id(req)
-        # if session_id is None or is_uuid(session_id) == False:
-        #     self._set_resp(403, "Access denied")
-        #     return
-        # Dummy data
-        # TODO: udpate with actual data
-        self._set_resp(200, json.dumps({"houses": [
-            {
-                "house_id": 1,
-                "address": "123 Mai Chí Thọ St, Thủ Đức",
-                "capacity": 5,
-                "base_price": 10000000,
-                "additional": {
-                    "type": "apartment",
-                    "description": "Happy Residence Charming apartment for rent",
-                    "images": [
-                        "/__images/houses/1/1.jpg",
-                        "/__images/houses/1/2.jpg",
-                        "/__images/houses/1/3.jpg",
-                    ],
-                }
-            },
-            {
-                "house_id": 2,
-                "address": "456 Lý Thái Tổ St, Thủ Đức",
-                "capacity": 3,
-                "base_price": 8000000,
-                "additional": {
-                    "type": "house",
-                    "description": "Lovely Villa with beautiful views",
-                    "images": [
-                        "/__images/houses/2/1.jpg",
-                        "/__images/houses/2/2.jpg",
-                        "/__images/houses/2/3.jpg",
-                    ],
-                }
-            }
-        ]}))
+    def verify_params(self, in_req_path: str):
+        in_params = parse_qs(urlparse(in_req_path).query)
+        out_address  = None
+        # Try parse params
+        try:
+            if "address" in in_params:
+                out_address = in_params["address"][0]
+            else:
+                out_address = ""
+        except Exception as e:
+            self._set_resp(400, f"Invalid data to query '{in_req_path}' -- {str(e)}")
+            return None
+        # Out params
+        return out_address
 
+    def _handle(self, req: RequestRouter):
+        # Parse and verify params
+        in_address = self.verify_params(req.path)
+        if in_address is None:
+            return
+        # Get houses
+        db_ret = DBHanlder.dbMain.get_houses(in_address)
+        if is_json(db_ret):
+            resp = json.loads(db_ret)
+            if resp.keys().__contains__("error"):
+                self._set_resp(400, resp["error"])
+            else:
+                self._set_resp(200, json.dumps(resp))
+        else:
+            self._set_resp(500, "Failed to get rented houses")

@@ -1,19 +1,48 @@
 <template>
-  hehe
-  <div id="houses" class="row">
-    <div class="col-3 house-item shadow card" v-for="item in housesData">
-      <div class="card-body">
-        <h5 class="card-title">{{ `${item.additional.description} - ID: ${item.house_id}` }}</h5>
-        <p class="card-text">
+  <div id="houses">
+    <div class="row" v-for="it in housesDataShow">
+      <div class="col-4" v-for="item in it">
+        <div class="house-item shadow card" style="height: 100%;">
           <img :src="item.additional.images[0]" class="card-img-top">
-          <!-- <h5 class="card-title">{{ item.address }}</h5> -->
-          Capacity: {{ item.capacity }} person(s) <br>
-          Base Price: {{ item.base_price }} won/day <br>
-          Additional: {{ JSON.stringify(item.additional) }}
-        </p>
-        <button class="btn btn-primary" @click="showDetail(item)">Detail</button>
+          <div class="card-body">
+            <div class="card-text">
+              <h5 class="card-title" v-tooltip="`${item.additional.description} - ID: ${item.house_id}`">
+                {{ `${item.additional.description} - ID: ${item.house_id}` }}
+              </h5>
+              <p class="fw-light">
+                <font-awesome-icon :icon="['fas', 'location-dot']" />
+                {{ item.address }}
+              </p>
+              <p class="fw-light"><font-awesome-icon :icon="['fas', 'person']" /> Peoples: {{ item.capacity }}</p>
+              <p class="fw-light"><font-awesome-icon :icon="['fas', 'sack-dollar']" /> Price: <span class="fw-semibold">{{ priceToString(item.base_price) }} / Month</span></p>
+              <button v-if="searchType == 0" class="btn btn-warning btn-detail" @click="showDetail(item)">Detail</button>
+              <button v-if="searchType != 0" class="btn btn-primary btn-detail" @click="showBill(item)">View Bills</button>
+              <button v-if="searchType != 0" class="btn btn-success btn-rented">Rented</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <div class="house-item shadow card" hidden v-for="item in housesData">
+      <img :src="item.additional.images[0]" class="card-img-top">
+      <div class="card-body">
+        <div class="card-text">
+          <h5 class="card-title" v-tooltip="`${item.additional.description} - ID: ${item.house_id}`">
+            {{ `${item.additional.description} - ID: ${item.house_id}` }}
+          </h5>
+          <p class="fw-light">
+            <font-awesome-icon :icon="['fas', 'location-dot']" />
+            {{ item.address }}
+          </p>
+          <p class="fw-light"><font-awesome-icon :icon="['fas', 'person']" /> Peoples: {{ item.capacity }}</p>
+          <p class="fw-light"><font-awesome-icon :icon="['fas', 'sack-dollar']" /> Price: <span class="fw-semibold">{{ priceToString(item.base_price) }} / Month</span></p>
+          <button v-if="searchType == 0" class="btn btn-warning btn-detail" @click="showDetail(item)">Detail</button>
+          <button v-if="searchType != 0" class="btn btn-primary btn-detail" @click="showBill(item)">View Bills</button>
+          <button v-if="searchType != 0" class="btn btn-success btn-rented">Rented</button>
+        </div>
+      </div>
+    </div>
+    <Bills :house-id="inputHouseId" @houseIdChange="updateInHouseId"/>
   </div>
 </template>
 
@@ -22,8 +51,11 @@
 </style>
 
 <script setup lang="ts">
+import Bills from '@/components/bills/bills.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { ref, onMounted } from 'vue';
 import { houseApis } from '@/apis/house';
+import { priceToString } from '@/utils'
 import { toast } from 'vue3-toastify';
 
 interface House {
@@ -70,10 +102,17 @@ const props = defineProps({
     type: Object,
     required: false,
     default: {},
+  },
+  searchType: {
+    type: Number,
+    required: false,
+    default: 0
   }
 });
 
+var inputHouseId = ref<number>(0);
 var housesData = ref<House[]>([]);
+var housesDataShow = ref<any[]>([]);
 var searchData = ref<SearchParams>({
   address: '',
   houseType: '',
@@ -90,16 +129,57 @@ onMounted(() => {
     fetchHouses();
   } else {
     housesData.value = [...props.houses] as House[];
+    updateHousesDataShow();
   }
 })
 
 const fetchHouses = () => {
-  houseApis.fetchHouses(searchData.value).then((res) => {
-    return res.json().then((data) => {
-      housesData.value = data.houses;
+  if (props.searchType == 0) {
+    houseApis.fetchHouses(searchData.value).then((res) => {
+      return res.json().then((data) => {
+        housesData.value = data.houses;
+        updateHousesDataShow();
+      });
+    }).catch((err) => {
+      toast.error(err ? err : 'Failed to fetch houses');
     });
-  }).catch((err) => {
-    toast.error(err ? err : 'Failed to fetch houses');
-  });
+  } else {
+    // Fetch rented houses
+    houseApis.fetchRentedHouses().then((res) => {
+      return res.json().then((data) => {
+        housesData.value = data.houses;
+        updateHousesDataShow();
+      });
+    }).catch((err) => {
+      toast.error(err ? err : 'Failed to fetch rented houses');
+    });
+  }
 };
+
+const updateHousesDataShow = () => {
+  housesDataShow.value = [];
+  let count = 0;
+  let houses: any[] = [];
+  for (let i = 0; i < housesData.value.length; i++) {
+    if (count++ >= 3) {
+      housesDataShow.value.push(houses);
+    }
+    houses.push(housesData.value[i]);
+  }
+};
+
+const showDetail = (house: House) => {
+  inputHouseId.value = house.house_id;
+  console.log('Detail for house ID:', inputHouseId.value);
+};
+
+const showBill = (house: House) => {
+  inputHouseId.value = house.house_id;
+  console.log('Bill for house ID:', inputHouseId.value);
+};
+
+const updateInHouseId = (houseId: number) => {
+  inputHouseId.value = houseId;
+};
+
 </script>

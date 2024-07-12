@@ -56,7 +56,9 @@ def queries(schema_name):
             state       INTEGER NOT NULL DEFAULT 1
         )""",
         f"""CREATE TABLE IF NOT EXISTS {schema_name}.__house_bills (
+            user_id     INTEGER NOT NULL REFERENCES {schema_name}.users(user_id),
             house_id    INTEGER NOT NULL REFERENCES {schema_name}.__houses(house_id),
+            bill_id     SERIAL NOT NULL PRIMARY KEY,
             bill_data   JSONB DEFAULT '{{}}',
             init_date   TIMESTAMP NOT NULL,
             pay_date    TIMESTAMP DEFAULT NULL,

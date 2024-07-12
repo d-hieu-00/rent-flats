@@ -85,7 +85,8 @@
         <h1><span>Apartment&nbsp;</span>For rent In<span>&nbsp;Ho Chi Minh&nbsp;</span>City -<span>&nbsp;Saigon</span></h1>
         <img src="@/assets/house.png" alt="Home Header" />
       </div>
-      <House ></House>
+      <h3>Feature Apartment For Rent</h3>
+      <House style="margin-top: 3rem; margin-bottom: 3rem;" ></House>
     </div>
   </div>
 </template>

@@ -11,6 +11,10 @@ class HouseApis {
   public fetchHouses(params: any): Promise<Response> {
     return fetch(this.baseUrl + `?${buildQueryString(params)}`, { method: "GET" });
   }
+
+  public fetchRentedHouses(): Promise<Response> {
+    return fetch(this.baseUrl + '/rented', { method: "GET" });
+  }
 }
 
 const houseApis = new HouseApis();

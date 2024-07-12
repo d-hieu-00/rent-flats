@@ -1,0 +1,27 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+#bills {
+  margin-top: 10rem;
+  margin-left: 20rem;
+  margin-right: 20rem;
+  width: 100%;
+  animation: fadeIn ease 0.3s;
+}

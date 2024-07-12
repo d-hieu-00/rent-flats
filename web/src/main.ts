@@ -11,15 +11,37 @@ import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
-import { faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faSpinner,
+         faEye,
+         faEyeSlash,
+         faLocationDot,
+         faPerson,
+         faSackDollar,
+         faPhone,
+         faEnvelope,
+       } from '@fortawesome/free-solid-svg-icons'
+import { faFacebookF,
+         faTwitter,
+         faYoutube,
+         faLinkedinIn,
+         faGooglePlusG,
+       } from '@fortawesome/free-brands-svg-icons'
 
 // Fortawesome icon
 library.add(
     faSpinner,
     faEye,
-    faEyeSlash
+    faEyeSlash,
+    faLocationDot,
+    faPerson,
+    faSackDollar,
+    faPhone,
+    faEnvelope,
+    faFacebookF,
+    faTwitter,
+    faYoutube,
+    faLinkedinIn,
+    faGooglePlusG
 );
 
 createApp(app)

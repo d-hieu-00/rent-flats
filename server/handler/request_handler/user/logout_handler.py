@@ -14,7 +14,6 @@ class LogoutHandler(BaseRequestHandler):
     def path():     return "/api/logout"
 
     def _handle(self, req: RequestRouter):
-        print("start--handle logout")
         # Check session_id
         session_id = self._read_session_id(req)
         if session_id is None or is_uuid(session_id) == False:

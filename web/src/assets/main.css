@@ -108,3 +108,15 @@ a,
   border-bottom-right-radius: 3px !important;
   border-bottom-left-radius: 3px !important;
 }
+
+.overlay {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background: rgb(18 18 18 / 60%);
+  inset: 0;
+}

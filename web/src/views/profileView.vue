@@ -6,6 +6,7 @@
       <a :class="CUSTOM_LINK_CLASS + ' link-danger'" href="#">Delete account</a>
     </div>
     <div class="col card shadow">
+      <a  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top">heheheheeheh</a>
       <p class="fs-5 p-4 pb-0 mb-0">Hi <b>{{ user.username }}</b>,</p>
       <div class="card-body mt-0 pt-0 ms-3 me-3">
         <div class="input-group has-validation mb-3 mt-4">

@@ -55,16 +55,6 @@ var navItems = ref([
     display: false
   },
   {
-    val: "bill",
-    txt: "Bills",
-    class:"",
-    path: "/bill",
-    click: () => {},
-    active: false,
-    roles: { admin: false, user: true, public: false },
-    display: false
-  },
-  {
     val: "profile",
     txt: "My Profile",
     class: "",
