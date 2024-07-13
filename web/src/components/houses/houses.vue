@@ -23,25 +23,6 @@
         </div>
       </div>
     </div>
-    <div class="house-item shadow card" hidden v-for="item in housesData">
-      <img :src="item.additional.images[0]" class="card-img-top">
-      <div class="card-body">
-        <div class="card-text">
-          <h5 class="card-title" v-tooltip="`${item.additional.description} - ID: ${item.house_id}`">
-            {{ `${item.additional.description} - ID: ${item.house_id}` }}
-          </h5>
-          <p class="fw-light">
-            <font-awesome-icon :icon="['fas', 'location-dot']" />
-            {{ item.address }}
-          </p>
-          <p class="fw-light"><font-awesome-icon :icon="['fas', 'person']" /> Peoples: {{ item.capacity }}</p>
-          <p class="fw-light"><font-awesome-icon :icon="['fas', 'sack-dollar']" /> Price: <span class="fw-semibold">{{ priceToString(item.base_price) }} / Month</span></p>
-          <button v-if="searchType == 0" class="btn btn-warning btn-detail" @click="showDetail(item)">Detail</button>
-          <button v-if="searchType != 0" class="btn btn-primary btn-detail" @click="showBill(item)">View Bills</button>
-          <button v-if="searchType != 0" class="btn btn-success btn-rented">Rented</button>
-        </div>
-      </div>
-    </div>
     <Bills v-if="inputHouseId > 0" :house-id="inputHouseId" @houseIdChange="updateInHouseId"/>
   </div>
 </template>
@@ -163,6 +144,8 @@ const updateHousesDataShow = () => {
   for (let i = 0; i < housesData.value.length; i++) {
     if (count++ >= 3) {
       housesDataShow.value.push(houses);
+      houses = [];
+      count = 1;
     }
     houses.push(housesData.value[i]);
   }
@@ -170,6 +153,8 @@ const updateHousesDataShow = () => {
   if (houses.length > 0) {
     housesDataShow.value.push(houses);
   }
+
+  console.log(housesDataShow.value);
 };
 
 const showDetail = (house: House) => {
@@ -179,8 +164,9 @@ const showDetail = (house: House) => {
 };
 
 const showBill = (house: House) => {
-  inputHouseId.value = house.house_id;
-  console.log('Bill for house ID:', inputHouseId.value);
+  toast.error(`Not implemented`);
+  // inputHouseId.value = house.house_id;
+  // console.log('Bill for house ID:', inputHouseId.value);
 };
 
 const updateInHouseId = (houseId: number) => {

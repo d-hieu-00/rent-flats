@@ -4,6 +4,18 @@
       <div class="card">
         <button class="btn btn-danger" @click="close">Close</button>
         <p>{{ houseId }}</p>
+        <div class="card-body">
+          <div v-for="bill in billData" :key="bill.bill_id" class="bill-card">
+            <h3>Bill for House ID: {{ bill.house_id }}</h3>
+            <p><strong>Base:</strong> {{ bill.bill_data.base }}</p>
+            <p><strong>Total:</strong> {{ bill.bill_data.total }}</p>
+            <p><strong>Water:</strong> {{ bill.bill_data.water }}</p>
+            <p><strong>Service:</strong> {{ bill.bill_data.service }}</p>
+            <p><strong>Electric:</strong> {{ bill.bill_data.electric }}</p>
+            <p><strong>Init Date:</strong> {{ bill.init_date }}</p>
+            <p><strong>State:</strong> {{ bill.state }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -16,7 +28,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { billApis } from '@/apis/bill.ts';
+import { billApis } from '@/apis/bill';
 
 const props = defineProps({
   houseId: {
